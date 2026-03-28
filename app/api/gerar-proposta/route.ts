@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
       valorExtenso: body.valorExtenso,
       horarioAtendimento: body.horarioAtendimento,
       minimoVisitas: body.minimoVisitas,
-      observacaoPlantao: body.observacaoPlantao || undefined,
+      plantao: !!body.plantao,
+      valorPlantao: body.valorPlantao || undefined,
     };
 
     const pdfBuffer = await generateProposalPDF(data);

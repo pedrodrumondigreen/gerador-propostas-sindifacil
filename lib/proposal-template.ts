@@ -16,7 +16,8 @@ export interface ProposalData {
   valorExtenso: string; // total por extenso (manual)
   horarioAtendimento: string;
   minimoVisitas: string;
-  observacaoPlantao?: string;
+  plantao: boolean;
+  valorPlantao?: string; // somado ao total, não exibido separadamente
 }
 
 export interface PageImages {
@@ -58,13 +59,14 @@ export function generateProposalHTML(
     valorExtenso,
     horarioAtendimento,
     minimoVisitas,
-    observacaoPlantao,
+    plantao, valorPlantao,
   } = data;
 
   const totalValor = formatBRL(
     (servicoA && valorA ? parseBRL(valorA) : 0) +
     (servicoB && valorB ? parseBRL(valorB) : 0) +
-    (servicoC && valorC ? parseBRL(valorC) : 0)
+    (servicoC && valorC ? parseBRL(valorC) : 0) +
+    (plantao && valorPlantao ? parseBRL(valorPlantao) : 0)
   );
 
   // Cores amostradas pixel a pixel do PNG exportado pelo Canva
@@ -162,51 +164,48 @@ export function generateProposalHTML(
   ].filter((s) => s.ativo);
 
   const servicosHTML = SERVICOS.map((s) => `
-    <div style="margin-bottom:8px;">
+    <div style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;">
-        <div style="font-size:9.5px;font-weight:800;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.3px;flex:1;padding-right:6px;">
-          Opção ${s.opcao} – ${s.nome}
+        <div style="font-size:11px;font-weight:800;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.3px;flex:1;padding-right:8px;">
+          ${s.nome}
         </div>
-        <div style="font-size:10px;font-weight:700;color:#1C2D4E;white-space:nowrap;">
+        <div style="font-size:11px;font-weight:800;color:#1C2D4E;white-space:nowrap;">
           R$ ${s.valor}
         </div>
-      </div>
-      <div style="font-size:8.5px;color:#1C2D4E;font-style:italic;line-height:1.4;margin-top:2px;">
-        ${s.desc}
       </div>
     </div>
   `).join("");
 
   const p5 = page(images.page5,
     box(438, 79, 384, 461, ORANGE_BG,
-      `<div style="padding:16px 18px 0 18px;">
+      `<div style="padding:20px 20px 0 20px;">
 
         ${servicosHTML}
 
-        <div style="border-top:1px solid rgba(28,45,78,0.3);margin:10px 0 8px;"></div>
+        <div style="border-top:1.5px solid rgba(28,45,78,0.35);margin:10px 0 10px;"></div>
 
-        <div style="font-size:9.5px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+        <div style="font-size:11px;font-weight:800;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">
           VALOR MENSAL TOTAL:
         </div>
-        <div style="font-size:22px;font-weight:800;color:#1C2D4E;line-height:1.15;">
+        <div style="font-size:26px;font-weight:900;color:#1C2D4E;line-height:1.1;">
           R$ ${totalValor}
         </div>
-        <div style="font-size:11px;color:#1C2D4E;font-style:italic;margin:3px 0 12px;">
+        <div style="font-size:12px;color:#1C2D4E;font-style:italic;margin:4px 0 14px;">
           (${valorExtenso})
         </div>
 
-        <div style="font-size:9.5px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">
+        <div style="font-size:11px;font-weight:800;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:12px;">
           CORREÇÃO ANUAL: IGPM ou INPC
         </div>
 
-        <div style="font-size:10px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;margin-bottom:5px;">
+        <div style="font-size:11px;color:#1C2D4E;line-height:1.65;padding-left:14px;position:relative;margin-bottom:6px;">
           <span style="position:absolute;left:0;">•</span>
           ${horarioAtendimento};
         </div>
 
-        <div style="font-size:10px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;">
+        <div style="font-size:11px;color:#1C2D4E;line-height:1.65;padding-left:14px;position:relative;">
           <span style="position:absolute;left:0;">•</span>
-          Mínimo de ${minimoVisitas} visitas mensais;${observacaoPlantao ? `<br><span style="font-size:9px;font-style:italic;color:#555;">${observacaoPlantao}</span>` : ""}
+          Mínimo de ${minimoVisitas} visitas mensais.
         </div>
 
       </div>`
@@ -221,8 +220,9 @@ export function generateProposalHTML(
 <head>
   <meta charset="UTF-8"/>
   <style>
+    @page { margin: 0; size: 794px 1123px; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { background:#fff; }
+    html, body { width:794px; background:#fff; }
   </style>
 </head>
 <body>

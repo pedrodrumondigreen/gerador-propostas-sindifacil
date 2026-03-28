@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, useWatch, UseFormRegisterReturn } from "react-hook-form";
+import { useForm, useWatch, Controller, UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
@@ -23,7 +23,8 @@ const schema = z
     valorExtenso: z.string().min(1, "Valor por extenso é obrigatório"),
     horarioAtendimento: z.string().min(1, "Horário de atendimento é obrigatório"),
     minimoVisitas: z.string().min(1, "Mínimo de visitas é obrigatório"),
-    observacaoPlantao: z.string().optional(),
+    plantao: z.boolean(),
+    valorPlantao: z.string().optional(),
   })
   .refine((d) => d.servicoA || d.servicoB || d.servicoC, {
     message: "Selecione pelo menos um serviço",
@@ -40,6 +41,10 @@ const schema = z
   .refine((d) => !d.servicoC || !!d.valorC, {
     message: "Informe o valor do Apoio operacional",
     path: ["valorC"],
+  })
+  .refine((d) => !d.plantao || !!d.valorPlantao, {
+    message: "Informe o valor por acionamento do plantão",
+    path: ["valorPlantao"],
   });
 
 type FormData = z.infer<typeof schema>;
@@ -80,18 +85,20 @@ export default function ProposalForm() {
       servicoA: false,
       servicoB: false,
       servicoC: false,
+      plantao: false,
     },
   });
 
-  const [servicoA, servicoB, servicoC, valorA, valorB, valorC] = useWatch({
+  const [servicoA, servicoB, servicoC, valorA, valorB, valorC, plantao, valorPlantao] = useWatch({
     control,
-    name: ["servicoA", "servicoB", "servicoC", "valorA", "valorB", "valorC"],
+    name: ["servicoA", "servicoB", "servicoC", "valorA", "valorB", "valorC", "plantao", "valorPlantao"],
   });
 
   const total = formatBRL(
     (servicoA && valorA ? parseBRL(valorA) : 0) +
     (servicoB && valorB ? parseBRL(valorB) : 0) +
-    (servicoC && valorC ? parseBRL(valorC) : 0)
+    (servicoC && valorC ? parseBRL(valorC) : 0) +
+    (plantao && valorPlantao ? parseBRL(valorPlantao) : 0)
   );
 
   const onSubmit = async (data: FormData) => {
@@ -278,14 +285,51 @@ export default function ProposalForm() {
               className={inputClass(!!errors.minimoVisitas)}
             />
           </Field>
-          <Field label="Observação sobre Plantão (opcional)" error={errors.observacaoPlantao?.message}>
-            <textarea
-              {...register("observacaoPlantao")}
-              rows={2}
-              placeholder="ex: Custo adicional de R$ 100,00 por acionamento"
-              className={`${inputClass(false)} resize-none`}
-            />
-          </Field>
+        </div>
+      </section>
+
+      {/* ── PLANTÃO ── */}
+      <section>
+        <h2 className="text-sm font-bold text-[#1C2D4E] uppercase tracking-widest mb-4 pb-2 border-b border-[#1C2D4E]/10">
+          Plantão
+        </h2>
+        <div className="space-y-4">
+          <Controller
+            name="plantao"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-6">
+                <span className="text-sm font-semibold text-[#1C2D4E]">Inclui plantão?</span>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={field.value === true}
+                    onChange={() => field.onChange(true)}
+                    className="h-4 w-4 accent-[#D98C45]"
+                  />
+                  <span className="text-sm text-gray-700">Sim</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={field.value === false}
+                    onChange={() => field.onChange(false)}
+                    className="h-4 w-4 accent-[#D98C45]"
+                  />
+                  <span className="text-sm text-gray-700">Não</span>
+                </label>
+              </div>
+            )}
+          />
+          {plantao && (
+            <Field label="Valor por acionamento (R$)" error={errors.valorPlantao?.message}>
+              <input
+                {...register("valorPlantao")}
+                placeholder="ex: 100,00"
+                className={inputClass(!!errors.valorPlantao)}
+              />
+            </Field>
+          )}
         </div>
       </section>
 
