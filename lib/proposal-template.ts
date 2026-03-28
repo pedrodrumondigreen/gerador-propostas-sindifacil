@@ -6,8 +6,14 @@ export interface ProposalData {
   bairro: string;
   cidade: string;
   responsavel: string;
-  valorMensal: string;
-  valorExtenso: string;
+  // Serviços contratados
+  servicoA: boolean;
+  valorA?: string;    // ex: "1.000,00"
+  servicoB: boolean;
+  valorB?: string;
+  servicoC: boolean;
+  valorC?: string;
+  valorExtenso: string; // total por extenso (manual)
   horarioAtendimento: string;
   minimoVisitas: string;
   observacaoPlantao?: string;
@@ -26,6 +32,14 @@ export interface PageImages {
  * Coordenadas extraídas da API do Canva (design 794×1123 px).
  * Campos variáveis: página 1 (data, número, cliente) e página 5 (valor, horário, visitas).
  */
+function parseBRL(v: string): number {
+  return parseFloat(v.replace(/\./g, "").replace(",", ".")) || 0;
+}
+
+function formatBRL(n: number): string {
+  return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export function generateProposalHTML(
   data: ProposalData,
   images: PageImages
@@ -38,12 +52,20 @@ export function generateProposalHTML(
     bairro,
     cidade,
     responsavel,
-    valorMensal,
+    servicoA, valorA,
+    servicoB, valorB,
+    servicoC, valorC,
     valorExtenso,
     horarioAtendimento,
     minimoVisitas,
     observacaoPlantao,
   } = data;
+
+  const totalValor = formatBRL(
+    (servicoA && valorA ? parseBRL(valorA) : 0) +
+    (servicoB && valorB ? parseBRL(valorB) : 0) +
+    (servicoC && valorC ? parseBRL(valorC) : 0)
+  );
 
   // Cores amostradas pixel a pixel do PNG exportado pelo Canva
   const ORANGE_BG = "#DD9F6A";
@@ -114,33 +136,77 @@ export function generateProposalHTML(
 
   // ── PÁGINA 5 ──────────────────────────────────────────────────
   // Box laranja de condições: top=438.36 left=79.37 w=382.21 h=460.64
+
+  const SERVICOS = [
+    {
+      ativo: servicoA,
+      valor: valorA,
+      opcao: "A",
+      nome: "Síndico Profissional",
+      desc: "Representação legal, gestão das áreas comuns, convocação de assembleias e prestação de contas.",
+    },
+    {
+      ativo: servicoB,
+      valor: valorB,
+      opcao: "B",
+      nome: "Administração financeira/contábil",
+      desc: "Controle financeiro, emissão de boletos, pagamentos, conciliação e escrituração contábil.",
+    },
+    {
+      ativo: servicoC,
+      valor: valorC,
+      opcao: "C",
+      nome: "Apoio operacional ao síndico",
+      desc: "Suporte operacional: orçamentos, secretaria em assembleias e gestão dos bastidores.",
+    },
+  ].filter((s) => s.ativo);
+
+  const servicosHTML = SERVICOS.map((s) => `
+    <div style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div style="font-size:9.5px;font-weight:800;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.3px;flex:1;padding-right:6px;">
+          Opção ${s.opcao} – ${s.nome}
+        </div>
+        <div style="font-size:10px;font-weight:700;color:#1C2D4E;white-space:nowrap;">
+          R$ ${s.valor}
+        </div>
+      </div>
+      <div style="font-size:8.5px;color:#1C2D4E;font-style:italic;line-height:1.4;margin-top:2px;">
+        ${s.desc}
+      </div>
+    </div>
+  `).join("");
+
   const p5 = page(images.page5,
     box(438, 79, 384, 461, ORANGE_BG,
-      `<div style="padding:20px 20px 0 20px;">
+      `<div style="padding:16px 18px 0 18px;">
 
-        <div style="font-size:10.5px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
-          VALOR MENSAL:
-        </div>
+        ${servicosHTML}
 
-        <div style="font-size:24px;font-weight:800;color:#1C2D4E;line-height:1.15;">
-          R$ ${valorMensal}
+        <div style="border-top:1px solid rgba(28,45,78,0.3);margin:10px 0 8px;"></div>
+
+        <div style="font-size:9.5px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+          VALOR MENSAL TOTAL:
         </div>
-        <div style="font-size:12px;color:#1C2D4E;font-style:italic;margin:3px 0 16px;">
+        <div style="font-size:22px;font-weight:800;color:#1C2D4E;line-height:1.15;">
+          R$ ${totalValor}
+        </div>
+        <div style="font-size:11px;color:#1C2D4E;font-style:italic;margin:3px 0 12px;">
           (${valorExtenso})
         </div>
 
-        <div style="font-size:10px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:14px;">
+        <div style="font-size:9.5px;font-weight:700;color:#1C2D4E;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">
           CORREÇÃO ANUAL: IGPM ou INPC
         </div>
 
-        <div style="font-size:10.5px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;margin-bottom:6px;">
+        <div style="font-size:10px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;margin-bottom:5px;">
           <span style="position:absolute;left:0;">•</span>
           ${horarioAtendimento};
         </div>
 
-        <div style="font-size:10.5px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;">
+        <div style="font-size:10px;color:#1C2D4E;line-height:1.65;padding-left:12px;position:relative;">
           <span style="position:absolute;left:0;">•</span>
-          Mínimo de ${minimoVisitas} visitas mensais;${observacaoPlantao ? `<br><span style="font-size:10px;font-style:italic;color:#555;">${observacaoPlantao}</span>` : ""}
+          Mínimo de ${minimoVisitas} visitas mensais;${observacaoPlantao ? `<br><span style="font-size:9px;font-style:italic;color:#555;">${observacaoPlantao}</span>` : ""}
         </div>
 
       </div>`

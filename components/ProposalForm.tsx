@@ -1,24 +1,46 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch, UseFormRegisterReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-const schema = z.object({
-  numero: z.string().min(1, "Número da proposta é obrigatório"),
-  data: z.string().min(1, "Data é obrigatória"),
-  nomeCondominio: z.string().min(1, "Nome do condomínio é obrigatório"),
-  endereco: z.string().min(1, "Endereço é obrigatório"),
-  bairro: z.string().min(1, "Bairro é obrigatório"),
-  cidade: z.string().min(1, "Cidade é obrigatória"),
-  responsavel: z.string().min(1, "Responsável é obrigatório"),
-  valorMensal: z.string().min(1, "Valor mensal é obrigatório"),
-  valorExtenso: z.string().min(1, "Valor por extenso é obrigatório"),
-  horarioAtendimento: z.string().min(1, "Horário de atendimento é obrigatório"),
-  minimoVisitas: z.string().min(1, "Mínimo de visitas é obrigatório"),
-  observacaoPlantao: z.string().optional(),
-});
+const schema = z
+  .object({
+    numero: z.string().min(1, "Número da proposta é obrigatório"),
+    data: z.string().min(1, "Data é obrigatória"),
+    nomeCondominio: z.string().min(1, "Nome do condomínio é obrigatório"),
+    endereco: z.string().min(1, "Endereço é obrigatório"),
+    bairro: z.string().min(1, "Bairro é obrigatório"),
+    cidade: z.string().min(1, "Cidade é obrigatória"),
+    responsavel: z.string().min(1, "Responsável é obrigatório"),
+    servicoA: z.boolean(),
+    valorA: z.string().optional(),
+    servicoB: z.boolean(),
+    valorB: z.string().optional(),
+    servicoC: z.boolean(),
+    valorC: z.string().optional(),
+    valorExtenso: z.string().min(1, "Valor por extenso é obrigatório"),
+    horarioAtendimento: z.string().min(1, "Horário de atendimento é obrigatório"),
+    minimoVisitas: z.string().min(1, "Mínimo de visitas é obrigatório"),
+    observacaoPlantao: z.string().optional(),
+  })
+  .refine((d) => d.servicoA || d.servicoB || d.servicoC, {
+    message: "Selecione pelo menos um serviço",
+    path: ["servicoA"],
+  })
+  .refine((d) => !d.servicoA || !!d.valorA, {
+    message: "Informe o valor do Síndico Profissional",
+    path: ["valorA"],
+  })
+  .refine((d) => !d.servicoB || !!d.valorB, {
+    message: "Informe o valor da Administração financeira/contábil",
+    path: ["valorB"],
+  })
+  .refine((d) => !d.servicoC || !!d.valorC, {
+    message: "Informe o valor do Apoio operacional",
+    path: ["valorC"],
+  });
 
 type FormData = z.infer<typeof schema>;
 
@@ -30,6 +52,14 @@ function todayFormatted(): string {
   return `${d}/${m}/${y}`;
 }
 
+function parseBRL(v: string): number {
+  return parseFloat(v.replace(/\./g, "").replace(",", ".")) || 0;
+}
+
+function formatBRL(n: number): string {
+  return n.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
 export default function ProposalForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +68,7 @@ export default function ProposalForm() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -46,8 +77,22 @@ export default function ProposalForm() {
       cidade: "Belo Horizonte/MG",
       horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 14 às 17h",
       minimoVisitas: "4 (quatro)",
+      servicoA: false,
+      servicoB: false,
+      servicoC: false,
     },
   });
+
+  const [servicoA, servicoB, servicoC, valorA, valorB, valorC] = useWatch({
+    control,
+    name: ["servicoA", "servicoB", "servicoC", "valorA", "valorB", "valorC"],
+  });
+
+  const total = formatBRL(
+    (servicoA && valorA ? parseBRL(valorA) : 0) +
+    (servicoB && valorB ? parseBRL(valorB) : 0) +
+    (servicoC && valorC ? parseBRL(valorC) : 0)
+  );
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -154,28 +199,73 @@ export default function ProposalForm() {
         </div>
       </section>
 
+      {/* ── SERVIÇOS CONTRATADOS ── */}
+      <section>
+        <h2 className="text-sm font-bold text-[#1C2D4E] uppercase tracking-widest mb-4 pb-2 border-b border-[#1C2D4E]/10">
+          Serviços Contratados
+        </h2>
+        {errors.servicoA?.message && (
+          <p className="mb-3 text-xs text-red-600">{errors.servicoA.message}</p>
+        )}
+        <div className="space-y-3">
+          <ServicoCard
+            letra="A"
+            nome="Síndico Profissional"
+            descricao="Representação legal, convocação de assembleias, gestão das áreas comuns e prestação de contas aos condôminos."
+            checked={!!servicoA}
+            checkboxProps={register("servicoA")}
+            valorProps={register("valorA")}
+            valorError={errors.valorA?.message}
+            mostrarValor={!!servicoA}
+          />
+          <ServicoCard
+            letra="B"
+            nome="Administração financeira/contábil"
+            descricao="Controle financeiro, emissão de boletos, pagamentos, conciliação bancária e escrituração contábil."
+            checked={!!servicoB}
+            checkboxProps={register("servicoB")}
+            valorProps={register("valorB")}
+            valorError={errors.valorB?.message}
+            mostrarValor={!!servicoB}
+          />
+          <ServicoCard
+            letra="C"
+            nome="Apoio operacional ao síndico"
+            descricao="Suporte operacional ao síndico: orçamentos, secretaria em assembleias virtuais e gestão dos bastidores."
+            checked={!!servicoC}
+            checkboxProps={register("servicoC")}
+            valorProps={register("valorC")}
+            valorError={errors.valorC?.message}
+            mostrarValor={!!servicoC}
+          />
+        </div>
+
+        {/* Total */}
+        {(servicoA || servicoB || servicoC) && (
+          <div className="mt-4 flex items-center justify-between bg-[#1C2D4E] rounded-lg px-5 py-3">
+            <span className="text-xs font-bold text-white/70 uppercase tracking-widest">
+              Valor Total Mensal
+            </span>
+            <span className="text-lg font-bold text-white">
+              R$ {total}
+            </span>
+          </div>
+        )}
+      </section>
+
       {/* ── CONDIÇÕES COMERCIAIS ── */}
       <section>
         <h2 className="text-sm font-bold text-[#1C2D4E] uppercase tracking-widest mb-4 pb-2 border-b border-[#1C2D4E]/10">
           Condições Comerciais
         </h2>
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="Valor Mensal (R$)" error={errors.valorMensal?.message}>
-              <input
-                {...register("valorMensal")}
-                placeholder="ex: 800,00"
-                className={inputClass(!!errors.valorMensal)}
-              />
-            </Field>
-            <Field label="Valor por Extenso" error={errors.valorExtenso?.message}>
-              <input
-                {...register("valorExtenso")}
-                placeholder="ex: oitocentos reais"
-                className={inputClass(!!errors.valorExtenso)}
-              />
-            </Field>
-          </div>
+          <Field label="Valor Total por Extenso" error={errors.valorExtenso?.message}>
+            <input
+              {...register("valorExtenso")}
+              placeholder="ex: um mil e trezentos reais"
+              className={inputClass(!!errors.valorExtenso)}
+            />
+          </Field>
           <Field label="Horário de Atendimento" error={errors.horarioAtendimento?.message}>
             <input
               {...register("horarioAtendimento")}
@@ -235,6 +325,58 @@ export default function ProposalForm() {
         )}
       </button>
     </form>
+  );
+}
+
+function ServicoCard({
+  letra,
+  nome,
+  descricao,
+  checked,
+  checkboxProps,
+  valorProps,
+  valorError,
+  mostrarValor,
+}: {
+  letra: string;
+  nome: string;
+  descricao: string;
+  checked: boolean;
+  checkboxProps: UseFormRegisterReturn;
+  valorProps: UseFormRegisterReturn;
+  valorError?: string;
+  mostrarValor: boolean;
+}) {
+  return (
+    <div className={`rounded-lg border transition-colors duration-150 ${checked ? "border-[#D98C45] bg-[#FDF6EE]" : "border-gray-200 bg-white"}`}>
+      <label className="flex items-start gap-3 p-4 cursor-pointer">
+        <input
+          type="checkbox"
+          {...checkboxProps}
+          className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#D98C45] focus:ring-[#D98C45]/30 cursor-pointer"
+        />
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#1C2D4E] text-white text-xs font-bold">
+              {letra}
+            </span>
+            <span className="text-sm font-semibold text-[#1C2D4E]">{nome}</span>
+          </div>
+          <p className="mt-1 text-xs text-gray-500 leading-relaxed">{descricao}</p>
+        </div>
+      </label>
+      {mostrarValor && (
+        <div className="px-4 pb-4 pt-0">
+          <Field label={`Valor mensal — Opção ${letra} (R$)`} error={valorError}>
+            <input
+              {...valorProps}
+              placeholder="ex: 1.000,00"
+              className={inputClass(!!valorError)}
+            />
+          </Field>
+        </div>
+      )}
+    </div>
   );
 }
 
