@@ -40,9 +40,10 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Erro ao gerar proposta:", error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("Erro ao gerar proposta:", msg);
     return NextResponse.json(
-      { error: "Erro ao gerar o PDF da proposta." },
+      { error: `Erro ao gerar o PDF: ${msg}` },
       { status: 500 }
     );
   }
