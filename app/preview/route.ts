@@ -16,7 +16,7 @@ const DADOS_TESTE: ProposalData = {
   servicoB: true,
   valorB: "800,00",
   servicoC: false,
-  valorExtenso: "dois mil reais",
+  valorExtenso: "dois mil, cento e cinquenta reais",
   horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 14 às 17h",
   minimoVisitas: "4 (quatro)",
   plantao: true,
