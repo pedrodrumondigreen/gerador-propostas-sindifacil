@@ -1,6 +1,7 @@
 import { generateProposalHTML, ProposalData, TemplateAssets } from "./proposal-template";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 
 function imageToBase64(relPath: string): string | null {
   const filePath = path.join(process.cwd(), "public", relPath);
@@ -13,62 +14,61 @@ function imageToBase64(relPath: string): string | null {
 }
 
 /**
- * Remove o fundo da logo usando o Canvas API do browser (via Puppeteer).
- * Amostra a cor do pixel (0,0) e torna transparentes todos os pixels
- * dentro de uma tolerância de cor Euclidiana.
+ * Remove o fundo de uma imagem usando sharp (Node.js, sem browser).
+ * Converte para RGBA, amostra o pixel (0,0) como cor de fundo,
+ * e torna transparentes os pixels dentro de uma tolerância euclidiana.
  */
-async function removeBgViaCanvas(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  browser: any,
-  logoDataUri: string
-): Promise<string> {
-  const page = await browser.newPage();
-  try {
-    const result = await page.evaluate((src: string) => {
-      return new Promise<string>((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) { reject("no ctx"); return; }
-          ctx.drawImage(img, 0, 0);
+async function removeBg(filePath: string): Promise<string> {
+  const { data, info } = await sharp(filePath)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
 
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const d = imageData.data;
+  const { width, height, channels } = info; // channels === 4 (RGBA)
+  const buf = Buffer.from(data);
 
-          // Cor do fundo: pixel (0,0)
-          const bgR = d[0], bgG = d[1], bgB = d[2];
-          const tolerance = 45; // tolerância Euclidiana
+  // Cor do fundo: pixel (0,0)
+  const bgR = buf[0], bgG = buf[1], bgB = buf[2];
+  const tolerance = 50;
 
-          for (let i = 0; i < d.length; i += 4) {
-            const dr = d[i] - bgR;
-            const dg = d[i + 1] - bgG;
-            const db = d[i + 2] - bgB;
-            const dist = Math.sqrt(dr * dr + dg * dg + db * db);
-            if (dist < tolerance) {
-              // Fade suave nas bordas para evitar serrilhado
-              const alpha = Math.round((dist / tolerance) * 255);
-              d[i + 3] = alpha;
-            }
-          }
-
-          ctx.putImageData(imageData, 0, 0);
-          resolve(canvas.toDataURL("image/png"));
-        };
-        img.onerror = () => reject("load error");
-        img.src = src;
-      });
-    }, logoDataUri);
-    return result;
-  } finally {
-    await page.close();
+  for (let i = 0; i < width * height * channels; i += channels) {
+    const dr = buf[i]     - bgR;
+    const dg = buf[i + 1] - bgG;
+    const db = buf[i + 2] - bgB;
+    const dist = Math.sqrt(dr * dr + dg * dg + db * db);
+    if (dist < tolerance) {
+      // Fade suave nas bordas para evitar serrilhado
+      buf[i + 3] = Math.round((dist / tolerance) * 255);
+    }
   }
+
+  const pngBuffer = await sharp(buf, { raw: { width, height, channels } })
+    .png()
+    .toBuffer();
+
+  return `data:image/png;base64,${pngBuffer.toString("base64")}`;
 }
 
 export async function generateProposalPDF(data: ProposalData): Promise<Buffer> {
   const isProduction = process.env.NODE_ENV === "production";
+
+  // Resolve o caminho da logo e remove o fundo em Node.js (sem Puppeteer)
+  const logoFilePath =
+    ["assets/logo2.png", "assets/logo.png", "assets/logo.jpg"]
+      .map((p) => path.join(process.cwd(), "public", p))
+      .find((p) => fs.existsSync(p)) ?? null;
+
+  const assets: TemplateAssets = {
+    buildingBg: imageToBase64("assets/building.jpg") ?? "",
+    logoImg: logoFilePath ? await removeBg(logoFilePath) : undefined,
+    cristianoImg:
+      imageToBase64("assets/cristiano.jpeg") ??
+      imageToBase64("assets/cristiano.jpg") ??
+      imageToBase64("assets/cristiano.png") ??
+      undefined,
+  };
+
+  const html = generateProposalHTML(data, assets);
 
   let browser;
 
@@ -91,29 +91,8 @@ export async function generateProposalPDF(data: ProposalData): Promise<Buffer> {
   }
 
   try {
-    // Carrega assets
-    const rawLogo =
-      imageToBase64("assets/logo2.png") ??
-      imageToBase64("assets/logo.png") ??
-      imageToBase64("assets/logo.jpg") ??
-      undefined;
-
-    const assets: TemplateAssets = {
-      buildingBg: imageToBase64("assets/building.jpg") ?? "",
-      // Remove fundo da logo via canvas do browser
-      logoImg: rawLogo ? await removeBgViaCanvas(browser, rawLogo) : undefined,
-      cristianoImg:
-        imageToBase64("assets/cristiano.jpeg") ??
-        imageToBase64("assets/cristiano.jpg") ??
-        imageToBase64("assets/cristiano.png") ??
-        undefined,
-    };
-
-    const html = generateProposalHTML(data, assets);
-
     const page = await browser.newPage();
     await page.setViewport({ width: 794, height: 1123 });
-    // networkidle0 garante que o Google Fonts seja carregado antes de renderizar
     await page.setContent(html, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
