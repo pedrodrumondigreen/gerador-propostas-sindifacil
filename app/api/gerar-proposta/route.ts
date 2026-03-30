@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const pdfBuffer = await generateProposalPDF(data);
 
-    const nomeArquivo = `Proposta-${data.numero.replace("/", "-")}-${data.nomeCondominio.replace(/\s+/g, "_")}.pdf`;
+    const nomeArquivo = `Proposta-v3-${data.numero.replace("/", "-")}-${data.nomeCondominio.replace(/\s+/g, "_")}.pdf`;
 
     return new NextResponse(pdfBuffer as unknown as BodyInit, {
       status: 200,

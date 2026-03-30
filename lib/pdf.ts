@@ -191,7 +191,7 @@ export async function generateProposalPDF(data: ProposalData): Promise<Buffer> {
   try {
     const page = await browser.newPage();
     await page.setViewport({ width: 794, height: 1123 });
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    await page.setContent(html, { waitUntil: "load" });
 
     const pdfBuffer = await page.pdf({
       printBackground: true,
