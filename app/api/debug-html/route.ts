@@ -26,7 +26,8 @@ const DADOS: ProposalData = {
   valorB: "800,00",
   servicoC: false,
   valorExtenso: "dois mil reais",
-  horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 14 às 17h",
+  correcaoAnual: "IGPM ou INPC",
+  horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 13 às 17h",
   minimoVisitas: "4 (quatro)",
   plantao: false,
 };
