@@ -109,18 +109,18 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
     <div style="position:absolute; top:0; left:0; width:4px; height:1123px; background:${C.orange};"></div>
 
     <!-- Logo -->
-    <div style="position:absolute; top:52px; left:0; right:0; display:flex; justify-content:center;">
-      ${logoBlock(assets, 160)}
+    <div style="position:absolute; top:44px; left:0; right:0; display:flex; justify-content:center;">
+      ${logoBlock(assets, 200)}
     </div>
 
     <!-- Separador horizontal tênue -->
     <div style="
-      position:absolute; top:232px; left:56px; right:56px;
+      position:absolute; top:264px; left:56px; right:56px;
       height:1px; background:rgba(255,255,255,0.15);
     "></div>
 
     <!-- Hero text -->
-    <div style="position:absolute; top:256px; left:56px; right:72px;">
+    <div style="position:absolute; top:288px; left:56px; right:72px;">
       <div style="
         font-size:12px; font-weight:700; color:${C.orange};
         letter-spacing:4.5px; text-transform:uppercase; margin-bottom:16px;
@@ -129,13 +129,13 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
 
       <div style="
         font-family:'Playfair Display',Georgia,'Times New Roman',serif;
-        font-size:56px; font-weight:700; color:${C.white};
+        font-size:52px; font-weight:700; color:${C.white};
         line-height:1.05; letter-spacing:-1px; margin-bottom:10px;
       ">Prestação de<br>Serviços</div>
 
       <div style="
-        font-size:16px; font-weight:300; color:rgba(255,255,255,0.55);
-        line-height:1.6; margin-top:18px;
+        font-size:16px; font-weight:400; color:rgba(255,255,255,0.85);
+        line-height:1.65; margin-top:18px;
         font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
       ">Administração e gestão condominial profissional<br>em Belo Horizonte.</div>
     </div>
@@ -158,7 +158,7 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
         line-height:1.3; margin-bottom:12px; text-transform:uppercase;
       ">${data.nomeCondominio}</div>
       <div style="
-        font-size:15px; font-weight:300; color:rgba(255,255,255,0.65);
+        font-size:15px; font-weight:400; color:rgba(255,255,255,0.88);
         line-height:1.9;
         font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
       ">
@@ -212,6 +212,8 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
 // ── PÁGINA 2 — Sobre a SindiFácil ─────────────────────────────────────────────
 
 function aboutPage(assets: TemplateAssets): string {
+  const bodyStyle = `font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7; margin-bottom:11px;`;
+
   const content = `
     <!-- Barra laranja topo -->
     <div style="position:absolute; top:0; left:0; width:794px; height:4px; background:${C.orange};"></div>
@@ -220,61 +222,68 @@ function aboutPage(assets: TemplateAssets): string {
     <div style="position:absolute; top:0; left:0; width:4px; height:1123px; background:${C.navy};"></div>
 
     <!-- Conteúdo -->
-    <div style="position:absolute; top:60px; left:56px; right:56px; bottom:60px;">
+    <div style="position:absolute; top:52px; left:56px; right:56px; bottom:50px;">
 
       <!-- Eyebrow -->
       <div style="
         font-size:11px; font-weight:700; color:${C.orange};
-        letter-spacing:4px; text-transform:uppercase; margin-bottom:10px;
+        letter-spacing:4px; text-transform:uppercase; margin-bottom:8px;
         font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
       ">Sobre a</div>
 
       <!-- Título -->
       <div style="
         font-family:'Playfair Display',Georgia,'Times New Roman',serif;
-        font-size:48px; font-weight:700; color:${C.navy};
-        line-height:1.0; letter-spacing:-1.5px; margin-bottom:26px;
+        font-size:42px; font-weight:700; color:${C.navy};
+        line-height:1.0; letter-spacing:-1.5px; margin-bottom:20px;
       ">SindiFácil</div>
 
       <!-- Corpo -->
-      <div style="
-        font-size:15px; font-weight:400; color:${C.dark};
-        line-height:1.85; margin-bottom:16px; max-width:600px;
-      ">
-        A SindiFácil apresenta aos seus clientes uma administração inclusiva e participativa.
-        Sem nenhuma vaidade e de forma simples, buscamos sempre o que for de melhor para o seu condomínio.
-        Gestão eficiente e fácil — assim surgiu a SindiFácil.
+      <div style="${bodyStyle}">
+        A SindiFácil é uma empresa especializada em gestão condominial profissional, que atua com foco em
+        eficiência, organização, transparência e excelência no atendimento.
       </div>
-      <div style="
-        font-size:15px; font-weight:400; color:${C.dark};
-        line-height:1.85; margin-bottom:34px; max-width:600px;
-      ">
-        Nosso objetivo é proporcionar tranquilidade, segurança e valorização patrimonial
-        aos condomínios que administramos, com equilíbrio entre redução de custos e
-        manutenção da qualidade dos serviços.
+      <div style="${bodyStyle}">
+        Nosso propósito é oferecer aos condomínios uma administração segura, próxima e bem estruturada,
+        capaz de atender às demandas do dia a dia com agilidade, responsabilidade e visão estratégica.
+        Trabalhamos para que síndicos, moradores e conselhos tenham mais tranquilidade, contando com uma gestão
+        comprometida com a boa condução dos processos, a qualidade dos serviços e a valorização do patrimônio.
+      </div>
+      <div style="${bodyStyle}">
+        Na SindiFácil, entendemos que cada condomínio possui suas próprias características e necessidades.
+        Por isso, atuamos de forma personalizada, buscando soluções práticas, acompanhamento constante das
+        rotinas administrativas e operacionais, além de apoio na tomada de decisões importantes para a gestão.
+      </div>
+      <div style="${bodyStyle}">
+        Mais do que administrar condomínios, a SindiFácil busca entregar
+        <strong>confiança, credibilidade, otimização de processos, controle das demandas e melhoria contínua
+        dos serviços</strong>, sempre conciliando redução de custos, eficiência operacional e manutenção da qualidade.
+      </div>
+      <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7; margin-bottom:20px;">
+        Com uma atuação séria, próxima e profissional, a SindiFácil se posiciona como parceira dos condomínios
+        na construção de uma gestão mais moderna, eficiente e segura.
       </div>
 
       <!-- Separador pontilhado laranja -->
-      <div style="border-top:2px dashed rgba(217,140,69,0.4); margin-bottom:30px;"></div>
+      <div style="border-top:2px dashed rgba(217,140,69,0.4); margin-bottom:20px;"></div>
 
       <!-- Bloco do fundador -->
-      <div style="display:flex; align-items:flex-start; gap:22px;">
-        <!-- Foto / Monograma -->
+      <div style="display:flex; align-items:flex-start; gap:20px; margin-bottom:20px;">
         ${assets.cristianoImg
           ? `<img src="${assets.cristianoImg}" style="
-              width:90px; height:90px; border-radius:50%; flex-shrink:0;
+              width:80px; height:80px; border-radius:50%; flex-shrink:0;
               object-fit:cover; object-position:center 30%;
               border:3px solid ${C.orange};
             "/>`
           : `<div style="
-              width:90px; height:90px; border-radius:50%;
+              width:80px; height:80px; border-radius:50%;
               background:${C.navy}; flex-shrink:0;
               display:flex; align-items:center; justify-content:center;
               border:3px solid ${C.orange};
             ">
               <div style="
                 font-family:'Playfair Display',Georgia,serif;
-                font-size:28px; font-weight:700; color:${C.white};
+                font-size:24px; font-weight:700; color:${C.white};
               ">CD</div>
             </div>`
         }
@@ -282,15 +291,14 @@ function aboutPage(assets: TemplateAssets): string {
         <div>
           <div style="
             font-family:'Playfair Display',Georgia,'Times New Roman',serif;
-            font-size:20px; font-weight:700; color:${C.navy}; margin-bottom:4px;
+            font-size:18px; font-weight:700; color:${C.navy}; margin-bottom:3px;
           ">Cristiano Drumond</div>
           <div style="
-            font-size:11px; font-weight:700; color:${C.orange};
-            text-transform:uppercase; letter-spacing:2px; margin-bottom:16px;
+            font-size:10px; font-weight:700; color:${C.orange};
+            text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;
             font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
           ">Fundador &amp; Síndico Profissional</div>
-
-          <div style="font-size:14px; font-weight:400; color:${C.dark}; line-height:2.1;">
+          <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.85;">
             <div>• Graduado em Administração de Empresas</div>
             <div>• Pós-graduado em Previdência Complementar</div>
             <div>• Certificação em Gestão Condominial — ASCOB</div>
@@ -299,6 +307,28 @@ function aboutPage(assets: TemplateAssets): string {
             <div>• Fundador da SindiFácil desde fevereiro de 2020</div>
           </div>
         </div>
+      </div>
+
+      <!-- Separador equipe -->
+      <div style="border-top:1px solid ${C.grayLine}; margin-bottom:16px;"></div>
+
+      <!-- Equipe da SindiFácil -->
+      <div style="
+        font-size:13px; font-weight:700; color:${C.navy};
+        letter-spacing:1px; text-transform:uppercase; margin-bottom:10px;
+        font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
+      ">Equipe da SindiFácil</div>
+
+      <div style="${bodyStyle}">
+        Sob a liderança de Cristiano, a SindiFácil conta com uma equipe própria preparada e comprometida,
+        que atua no suporte às rotinas administrativas, operacionais e no atendimento das demandas do dia a
+        dia, garantindo mais organização, agilidade e acompanhamento dos processos.
+      </div>
+      <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7;">
+        Além da equipe interna, a SindiFácil trabalha com prestadores de serviços qualificados e parceiros de
+        confiança, escolhidos com base em critérios de qualidade, responsabilidade e eficiência. Essa estrutura
+        permite oferecer um atendimento mais completo, com soluções adequadas e serviços alinhados às
+        necessidades de cada cliente.
       </div>
     </div>
 
@@ -321,12 +351,12 @@ function servicePage(
   itens: string[]
 ): string {
   const itensHTML = itens.map((item) => `
-    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:13px;">
+    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:14px;">
       <div style="
         width:6px; height:6px; border-radius:50%;
-        background:${C.orange}; flex-shrink:0; margin-top:7px;
+        background:${C.orange}; flex-shrink:0; margin-top:8px;
       "></div>
-      <div style="font-size:15px; font-weight:400; color:${C.dark}; line-height:1.65;">${item}</div>
+      <div style="font-size:16px; font-weight:400; color:${C.dark}; line-height:1.65;">${item}</div>
     </div>
   `).join("");
 
@@ -335,20 +365,20 @@ function servicePage(
   const content = `
     <!-- Header navy -->
     <div style="
-      position:absolute; top:0; left:0; width:794px; height:248px;
+      position:absolute; top:0; left:0; width:794px; height:260px;
       background:${C.navy};
     ">
-      <div style="position:absolute; top:0; left:0; width:4px; height:248px; background:${C.orange};"></div>
-      <div style="position:absolute; top:58px; left:56px; right:56px;">
+      <div style="position:absolute; top:0; left:0; width:4px; height:260px; background:${C.orange};"></div>
+      <div style="position:absolute; top:50px; left:56px; right:56px;">
         <div style="
           font-size:11px; font-weight:700; color:${C.orange};
-          letter-spacing:4px; text-transform:uppercase; margin-bottom:12px;
+          letter-spacing:4px; text-transform:uppercase; margin-bottom:10px;
           font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
         ">Serviço ${letra}</div>
         <div style="
           font-family:'Playfair Display',Georgia,'Times New Roman',serif;
-          font-size:38px; font-weight:700; color:${C.white};
-          line-height:1.1; letter-spacing:-1px;
+          font-size:32px; font-weight:700; color:${C.white};
+          line-height:1.15; letter-spacing:-0.5px;
         ">${nomeHTML}</div>
       </div>
       <div style="
@@ -359,10 +389,10 @@ function servicePage(
     </div>
 
     <!-- Linha laranja divisória -->
-    <div style="position:absolute; top:248px; left:0; right:0; height:3px; background:${C.orange};"></div>
+    <div style="position:absolute; top:260px; left:0; right:0; height:3px; background:${C.orange};"></div>
 
     <!-- Conteúdo -->
-    <div style="position:absolute; top:278px; left:56px; right:56px; bottom:56px; overflow:hidden;">
+    <div style="position:absolute; top:290px; left:56px; right:56px; bottom:56px; overflow:hidden;">
       <div style="
         font-size:11px; font-weight:700; color:${C.navy};
         letter-spacing:3px; text-transform:uppercase;
@@ -620,15 +650,15 @@ export function generateProposalHTML(data: ProposalData, assets: TemplateAssets)
 
   if (data.servicoA) {
     pgNum++;
-    pages.push(servicePage(pgNum, "A", "Síndico<br>Profissional", itensA));
+    pages.push(servicePage(pgNum, "A", "Prestação de Serviço<br>de Síndico Profissional", itensA));
   }
   if (data.servicoB) {
     pgNum++;
-    pages.push(servicePage(pgNum, "B", "Administração<br>Financeira/Contábil", itensB));
+    pages.push(servicePage(pgNum, "B", "Prestação de Serviço de<br>Administração Financeira/Contábil", itensB));
   }
   if (data.servicoC) {
     pgNum++;
-    pages.push(servicePage(pgNum, "C", "Apoio Operacional<br>ao Síndico", itensC));
+    pages.push(servicePage(pgNum, "C", "Prestação de Serviço de<br>Apoio Operacional ao Síndico", itensC));
   }
 
   pgNum++;

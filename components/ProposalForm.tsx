@@ -80,7 +80,7 @@ export default function ProposalForm() {
     defaultValues: {
       data: todayFormatted(),
       cidade: "Belo Horizonte/MG",
-      horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 14 às 17h",
+      horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 13 às 17h",
       minimoVisitas: "4 (quatro)",
       servicoA: false,
       servicoB: false,
