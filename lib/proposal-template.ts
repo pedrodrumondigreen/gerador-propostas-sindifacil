@@ -109,8 +109,8 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
     <div style="position:absolute; top:0; left:0; width:4px; height:1123px; background:${C.orange};"></div>
 
     <!-- Logo -->
-    <div style="position:absolute; top:44px; left:0; right:0; display:flex; justify-content:center;">
-      ${logoBlock(assets, 200)}
+    <div style="position:absolute; top:40px; left:0; right:0; display:flex; justify-content:center;">
+      ${logoBlock(assets, 230)}
     </div>
 
     <!-- Separador horizontal tênue -->
@@ -212,7 +212,7 @@ function coverPage(data: ProposalData, assets: TemplateAssets): string {
 // ── PÁGINA 2 — Sobre a SindiFácil ─────────────────────────────────────────────
 
 function aboutPage(assets: TemplateAssets): string {
-  const bodyStyle = `font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7; margin-bottom:11px;`;
+  const bodyStyle = `font-size:14.5px; font-weight:400; color:${C.dark}; line-height:1.85; margin-bottom:14px;`;
 
   const content = `
     <!-- Barra laranja topo -->
@@ -259,7 +259,7 @@ function aboutPage(assets: TemplateAssets): string {
         <strong>confiança, credibilidade, otimização de processos, controle das demandas e melhoria contínua
         dos serviços</strong>, sempre conciliando redução de custos, eficiência operacional e manutenção da qualidade.
       </div>
-      <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7; margin-bottom:20px;">
+      <div style="font-size:14.5px; font-weight:400; color:${C.dark}; line-height:1.85; margin-bottom:20px;">
         Com uma atuação séria, próxima e profissional, a SindiFácil se posiciona como parceira dos condomínios
         na construção de uma gestão mais moderna, eficiente e segura.
       </div>
@@ -298,7 +298,7 @@ function aboutPage(assets: TemplateAssets): string {
             text-transform:uppercase; letter-spacing:2px; margin-bottom:12px;
             font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
           ">Fundador &amp; Síndico Profissional</div>
-          <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.85;">
+          <div style="font-size:14px; font-weight:400; color:${C.dark}; line-height:2.0;">
             <div>• Graduado em Administração de Empresas</div>
             <div>• Pós-graduado em Previdência Complementar</div>
             <div>• Certificação em Gestão Condominial — ASCOB</div>
@@ -324,7 +324,7 @@ function aboutPage(assets: TemplateAssets): string {
         que atua no suporte às rotinas administrativas, operacionais e no atendimento das demandas do dia a
         dia, garantindo mais organização, agilidade e acompanhamento dos processos.
       </div>
-      <div style="font-size:13px; font-weight:400; color:${C.dark}; line-height:1.7;">
+      <div style="font-size:14.5px; font-weight:400; color:${C.dark}; line-height:1.85;">
         Além da equipe interna, a SindiFácil trabalha com prestadores de serviços qualificados e parceiros de
         confiança, escolhidos com base em critérios de qualidade, responsabilidade e eficiência. Essa estrutura
         permite oferecer um atendimento mais completo, com soluções adequadas e serviços alinhados às
@@ -369,15 +369,10 @@ function servicePage(
       background:${C.navy};
     ">
       <div style="position:absolute; top:0; left:0; width:4px; height:260px; background:${C.orange};"></div>
-      <div style="position:absolute; top:50px; left:56px; right:56px;">
-        <div style="
-          font-size:11px; font-weight:700; color:${C.orange};
-          letter-spacing:4px; text-transform:uppercase; margin-bottom:10px;
-          font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
-        ">Serviço ${letra}</div>
+      <div style="position:absolute; top:58px; left:56px; right:56px;">
         <div style="
           font-family:'Playfair Display',Georgia,'Times New Roman',serif;
-          font-size:32px; font-weight:700; color:${C.white};
+          font-size:34px; font-weight:700; color:${C.white};
           line-height:1.15; letter-spacing:-0.5px;
         ">${nomeHTML}</div>
       </div>
