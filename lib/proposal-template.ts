@@ -19,6 +19,7 @@ export interface ProposalData {
   minimoVisitas: string;
   plantao: boolean;
   valorPlantao?: string; // somado ao total, não exibido separadamente
+  cortesias?: string; // texto livre exibido abaixo das condições comerciais
 }
 
 export interface TemplateAssets {
@@ -413,6 +414,7 @@ function valoresPage(data: ProposalData, pageNum: number): string {
     horarioAtendimento,
     minimoVisitas,
     plantao, valorPlantao,
+    cortesias,
   } = data;
 
   const totalValor = formatBRL(
@@ -423,9 +425,10 @@ function valoresPage(data: ProposalData, pageNum: number): string {
   );
 
   const activeServicos = [
-    { ativo: servicoA, valor: valorA, nome: "Síndico Profissional" },
-    { ativo: servicoB, valor: valorB, nome: "Administração Financeira/Contábil" },
-    { ativo: servicoC, valor: valorC, nome: "Apoio Operacional ao Síndico" },
+    { ativo: servicoA, nome: "Síndico Profissional" },
+    { ativo: servicoB, nome: "Administração Financeira/Contábil" },
+    { ativo: servicoC, nome: "Apoio Operacional ao Síndico" },
+    { ativo: plantao, nome: "Plantão Emergencial" },
   ].filter((s) => s.ativo);
 
   const rowsHTML = activeServicos.map((s, i) => `
@@ -436,9 +439,10 @@ function valoresPage(data: ProposalData, pageNum: number): string {
     ">
       <div style="font-size:15px; font-weight:400; color:${C.dark};">${s.nome}</div>
       <div style="
-        font-size:15px; font-weight:700; color:${C.navy};
-        white-space:nowrap; margin-left:16px;
-      ">R$ ${s.valor}</div>
+        font-size:13px; font-weight:600; color:${C.grayText};
+        white-space:nowrap; margin-left:16px; letter-spacing:0.5px;
+        font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
+      ">Incluso</div>
     </div>
   `).join("");
 
@@ -496,9 +500,17 @@ function valoresPage(data: ProposalData, pageNum: number): string {
       </div>
       <div style="
         font-size:13px; color:${C.grayText}; font-style:italic;
-        text-align:right; margin-bottom:32px;
+        text-align:right; margin-bottom:${plantao ? "8px" : "32px"};
         font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
       ">(${valorExtenso})</div>
+
+      ${plantao ? `
+      <div style="
+        font-size:12px; color:${C.orange}; font-style:italic;
+        text-align:right; margin-bottom:28px;
+        font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
+      ">* Incluso plantão aos sábados, domingos e feriados.</div>
+      ` : ""}
 
       <!-- Condições -->
       <div style="
@@ -514,6 +526,18 @@ function valoresPage(data: ProposalData, pageNum: number): string {
       ${bullet(`Mínimo de ${minimoVisitas} visitas mensais;`)}
       ${bullet("Proposta válida por 30 dias a partir da data de emissão;")}
       ${bullet("<strong>Primeiro mês GRÁTIS</strong> se o contrato for assinado nos primeiros 10 dias após a emissão.")}
+
+      ${cortesias ? `
+      <!-- Cortesias -->
+      <div style="
+        font-size:11px; font-weight:700; color:${C.navy};
+        letter-spacing:3px; text-transform:uppercase;
+        padding-bottom:10px; margin-top:24px; margin-bottom:18px;
+        border-bottom:2px solid ${C.orange};
+        font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
+      ">Cortesias</div>
+      ${cortesias.split("\n").filter(l => l.trim()).map(l => bullet(l.trim())).join("")}
+      ` : ""}
     </div>
 
     <div style="

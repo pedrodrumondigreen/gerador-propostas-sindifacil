@@ -26,6 +26,7 @@ const schema = z
     minimoVisitas: z.string().min(1, "Mínimo de visitas é obrigatório"),
     plantao: z.boolean(),
     valorPlantao: z.string().optional(),
+    cortesias: z.string().optional(),
   })
   .refine((d) => d.servicoA || d.servicoB || d.servicoC, {
     message: "Selecione pelo menos um serviço",
@@ -340,6 +341,21 @@ export default function ProposalForm() {
             </Field>
           )}
         </div>
+      </section>
+
+      {/* ── CORTESIAS ── */}
+      <section>
+        <h2 className="text-sm font-bold text-[#1C2D4E] uppercase tracking-widest mb-4 pb-2 border-b border-[#1C2D4E]/10">
+          Cortesias
+        </h2>
+        <Field label="Cortesias oferecidas (opcional — uma por linha)">
+          <textarea
+            {...register("cortesias")}
+            rows={4}
+            placeholder={"ex: Primeiro mês de assessoria jurídica gratuita\nReunião de apresentação presencial sem custo"}
+            className={`${inputClass(false)} resize-none leading-relaxed`}
+          />
+        </Field>
       </section>
 
       {/* ── FEEDBACK ── */}
