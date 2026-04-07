@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       servicoC: !!body.servicoC,
       valorC: body.valorC || undefined,
       valorExtenso: body.valorExtenso,
+      correcaoAnual: body.correcaoAnual || "IGPM ou INPC",
       horarioAtendimento: body.horarioAtendimento,
       minimoVisitas: body.minimoVisitas,
       plantao: !!body.plantao,

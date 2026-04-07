@@ -14,6 +14,7 @@ export interface ProposalData {
   servicoC: boolean;
   valorC?: string;
   valorExtenso: string; // total por extenso (manual)
+  correcaoAnual: string; // ex: "IGPM ou INPC"
   horarioAtendimento: string;
   minimoVisitas: string;
   plantao: boolean;
@@ -408,6 +409,7 @@ function valoresPage(data: ProposalData, pageNum: number): string {
     servicoB, valorB,
     servicoC, valorC,
     valorExtenso,
+    correcaoAnual,
     horarioAtendimento,
     minimoVisitas,
     plantao, valorPlantao,
@@ -507,7 +509,7 @@ function valoresPage(data: ProposalData, pageNum: number): string {
         font-family:'Lato','Helvetica Neue',Helvetica,Arial,sans-serif;
       ">Condições Comerciais</div>
 
-      ${bullet("Correção anual pelo IGPM ou INPC;")}
+      ${bullet(`Correção anual pelo ${correcaoAnual};`)}
       ${bullet(horarioAtendimento + ";")}
       ${bullet(`Mínimo de ${minimoVisitas} visitas mensais;`)}
       ${bullet("Proposta válida por 30 dias a partir da data de emissão;")}
@@ -613,7 +615,7 @@ export function generateProposalHTML(data: ProposalData, assets: TemplateAssets)
     "Zelar pela qualidade da limpeza e conservação das áreas comuns;",
     "Realizar orçamentos, contratar e acompanhar os serviços de empresas prestadoras;",
     "Atendimento em dias úteis dentro do horário comercial;",
-    "Plantão aos sábados, domingos e feriados para urgências e emergências;",
+    ...(data.plantao ? ["Plantão aos sábados, domingos e feriados para urgências e emergências;"] : []),
     "Gerenciar a cobrança de inadimplência (administrativa, extrajudicial e judicial);",
     "Manter o condomínio segurado.",
   ];

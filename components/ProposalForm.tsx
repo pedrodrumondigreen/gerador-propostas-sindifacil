@@ -21,6 +21,7 @@ const schema = z
     servicoC: z.boolean(),
     valorC: z.string().optional(),
     valorExtenso: z.string().min(1, "Valor por extenso é obrigatório"),
+    correcaoAnual: z.string().min(1, "Correção anual é obrigatória"),
     horarioAtendimento: z.string().min(1, "Horário de atendimento é obrigatório"),
     minimoVisitas: z.string().min(1, "Mínimo de visitas é obrigatório"),
     plantao: z.boolean(),
@@ -80,6 +81,7 @@ export default function ProposalForm() {
     defaultValues: {
       data: todayFormatted(),
       cidade: "Belo Horizonte/MG",
+      correcaoAnual: "IGPM ou INPC",
       horarioAtendimento: "Atendimento nos dias úteis, de 9 às 12h e de 13 às 17h",
       minimoVisitas: "4 (quatro)",
       servicoA: false,
@@ -271,6 +273,13 @@ export default function ProposalForm() {
               {...register("valorExtenso")}
               placeholder="ex: um mil e trezentos reais"
               className={inputClass(!!errors.valorExtenso)}
+            />
+          </Field>
+          <Field label="Correção Anual" error={errors.correcaoAnual?.message}>
+            <input
+              {...register("correcaoAnual")}
+              placeholder="ex: IGPM ou INPC"
+              className={inputClass(!!errors.correcaoAnual)}
             />
           </Field>
           <Field label="Horário de Atendimento" error={errors.horarioAtendimento?.message}>
