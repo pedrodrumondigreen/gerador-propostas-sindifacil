@@ -250,6 +250,46 @@ export default function ProposalForm() {
           />
         </div>
 
+        {/* Plantão — dentro de Serviços para refletir no total */}
+        <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
+          <span className="text-sm font-semibold text-[#1C2D4E]">Inclui plantão?</span>
+          <Controller
+            name="plantao"
+            control={control}
+            render={({ field }) => (
+              <div className="flex items-center gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={field.value === true}
+                    onChange={() => field.onChange(true)}
+                    className="h-4 w-4 accent-[#D98C45]"
+                  />
+                  <span className="text-sm text-gray-700">Sim</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    checked={field.value === false}
+                    onChange={() => field.onChange(false)}
+                    className="h-4 w-4 accent-[#D98C45]"
+                  />
+                  <span className="text-sm text-gray-700">Não</span>
+                </label>
+              </div>
+            )}
+          />
+          {plantao && (
+            <Field label="Valor por acionamento (R$)" error={errors.valorPlantao?.message}>
+              <input
+                {...register("valorPlantao")}
+                placeholder="ex: 100,00"
+                className={inputClass(!!errors.valorPlantao)}
+              />
+            </Field>
+          )}
+        </div>
+
         {/* Total */}
         {(servicoA || servicoB || servicoC) && (
           <div className="mt-4 flex items-center justify-between bg-[#1C2D4E] rounded-lg px-5 py-3">
@@ -295,51 +335,6 @@ export default function ProposalForm() {
               className={inputClass(!!errors.minimoVisitas)}
             />
           </Field>
-        </div>
-      </section>
-
-      {/* ── PLANTÃO ── */}
-      <section>
-        <h2 className="text-sm font-bold text-[#1C2D4E] uppercase tracking-widest mb-4 pb-2 border-b border-[#1C2D4E]/10">
-          Plantão
-        </h2>
-        <div className="space-y-4">
-          <Controller
-            name="plantao"
-            control={control}
-            render={({ field }) => (
-              <div className="flex items-center gap-6">
-                <span className="text-sm font-semibold text-[#1C2D4E]">Inclui plantão?</span>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    checked={field.value === true}
-                    onChange={() => field.onChange(true)}
-                    className="h-4 w-4 accent-[#D98C45]"
-                  />
-                  <span className="text-sm text-gray-700">Sim</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    checked={field.value === false}
-                    onChange={() => field.onChange(false)}
-                    className="h-4 w-4 accent-[#D98C45]"
-                  />
-                  <span className="text-sm text-gray-700">Não</span>
-                </label>
-              </div>
-            )}
-          />
-          {plantao && (
-            <Field label="Valor por acionamento (R$)" error={errors.valorPlantao?.message}>
-              <input
-                {...register("valorPlantao")}
-                placeholder="ex: 100,00"
-                className={inputClass(!!errors.valorPlantao)}
-              />
-            </Field>
-          )}
         </div>
       </section>
 
