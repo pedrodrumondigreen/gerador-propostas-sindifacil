@@ -523,9 +523,8 @@ function valoresPage(data: ProposalData, pageNum: number): string {
 
       ${bullet(`Correção anual pelo ${correcaoAnual};`)}
       ${bullet(horarioAtendimento + ";")}
-      ${bullet(`Mínimo de ${minimoVisitas} visitas mensais;`)}
+      ${servicoA ? bullet(`Mínimo de ${minimoVisitas} visitas mensais;`) : ""}
       ${bullet("Proposta válida por 30 dias a partir da data de emissão;")}
-      ${bullet("<strong>Primeiro mês GRÁTIS</strong> se o contrato for assinado nos primeiros 10 dias após a emissão.")}
 
       ${cortesias ? `
       <!-- Cortesias -->
