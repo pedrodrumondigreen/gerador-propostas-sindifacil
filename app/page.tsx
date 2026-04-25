@@ -5,17 +5,13 @@ export default function Home() {
     <main className="min-h-screen bg-[#F4F6FA]">
       {/* Header */}
       <header className="bg-[#1C2D4E] text-white py-5 px-6 shadow-lg">
-        <div className="max-w-2xl mx-auto flex items-center gap-3">
-          <svg width="36" height="36" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="8" y="14" width="28" height="24" stroke="#D98C45" strokeWidth="2"/>
-            <rect x="13" y="19" width="5" height="5" fill="#D98C45" opacity="0.8"/>
-            <rect x="26" y="19" width="5" height="5" fill="#D98C45" opacity="0.8"/>
-            <rect x="13" y="27" width="5" height="5" fill="#D98C45" opacity="0.5"/>
-            <rect x="26" y="27" width="5" height="5" fill="#D98C45" opacity="0.5"/>
-            <rect x="19" y="28" width="6" height="10" fill="#D98C45"/>
-            <polygon points="22,4 5,14 39,14" stroke="#D98C45" strokeWidth="2"/>
-          </svg>
-          <div>
+        <div className="max-w-2xl mx-auto flex items-center gap-4">
+          <img
+            src="/assets/logo2.png"
+            alt="SindiFácil"
+            className="h-14 w-14 object-contain"
+          />
+          <div className="border-l border-white/20 pl-4">
             <div className="flex items-baseline gap-0.5">
               <span className="text-xl font-bold text-[#D98C45]">Sindi</span>
               <span className="text-xl font-bold text-white">Fácil</span>
